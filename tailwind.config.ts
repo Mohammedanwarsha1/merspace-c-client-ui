@@ -9,6 +9,10 @@ const config = {
     "./components/**/*.{ts,tsx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "5rem",
+    },
     extend: {
       colors: {
         background: "var(--background)",
