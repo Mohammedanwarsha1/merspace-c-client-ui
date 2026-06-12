@@ -1,46 +1,9 @@
-import ProductCard, { Product } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Category } from "@/lib/types";
 import Image from "next/image";
-
-const product: Product[] = [
-  {
-    id: "1",
-    name: "Margarita Pizza",
-    description: "This is a very tasty pizza",
-    image: "/pizza-main.png",
-    price: 500,
-  },
-  {
-    id: "2",
-    name: "Margarita Pizza",
-    description: "This is a very tasty pizza",
-    image: "/pizza-main.png",
-    price: 500,
-  },
-  {
-    id: "3",
-    name: "Margarita Pizza",
-    description: "This is a very tasty pizza",
-    image: "/pizza-main.png",
-    price: 500,
-  },
-  {
-    id: "4",
-    name: "Margarita Pizza",
-    description: "This is a very tasty pizza",
-    image: "/pizza-main.png",
-    price: 500,
-  },
-  {
-    id: "5",
-    name: "Margarita Pizza",
-    description: "This is a very tasty pizza",
-    image: "/pizza-main.png",
-    price: 500,
-  },
-];
+import { Product } from "@/lib/types";
 
 export default async function Home() {
   const categoryResponse = await fetch(
@@ -56,6 +19,16 @@ export default async function Home() {
   }
 
   const categories: Category[] = await categoryResponse.json();
+
+  const productResponse = await fetch(
+    `${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=10`,
+    {
+      next: {
+        revalidate: 3600,
+      },
+    },
+  );
+  const products: { data: Product[] } = await productResponse.json();
   return (
     <>
       <section className="bg-white">
@@ -99,7 +72,22 @@ export default async function Home() {
                 );
               })}
             </TabsList>
-            <TabsContent value="pizza">
+            {categories.map((category) => {
+              return (
+                <TabsContent key={category._id} value={category._id}>
+                  <div className="grid grid-cols-4 gap-6 mt-6">
+                    {products.data
+                      .filter(
+                        (product) => product.category._id === category._id,
+                      )
+                      .map((product) => (
+                        <ProductCard product={product} key={product._id} />
+                      ))}
+                  </div>
+                </TabsContent>
+              );
+            })}
+            {/* <TabsContent value="pizza">
               <div className="grid grid-cols-4 gap-6 mt-6">
                 {product.map((product) => (
                   <ProductCard product={product} key={product.id} />
@@ -112,7 +100,7 @@ export default async function Home() {
                   <ProductCard product={product} key={product.id} />
                 ))}
               </div>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </div>
       </section>
