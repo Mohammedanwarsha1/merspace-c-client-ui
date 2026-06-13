@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { startTransition, useEffect } from "react";
 import ToppingCard from "./topping-card";
 import { Topping } from "@/lib/types";
 
@@ -24,14 +24,15 @@ const ToppingList = () => {
       (element: Topping) => element.id === topping.id,
     );
 
-    if (isAlreadyExists) {
-      setSelectedToppings((prev) =>
-        prev.filter((elm: Topping) => elm.id !== topping.id),
-      );
-      return;
-    }
-
-    setSelectedToppings((prev: Topping[]) => [...prev, topping]);
+    startTransition(() => {
+      if (isAlreadyExists) {
+        setSelectedToppings((prev) =>
+          prev.filter((elm: Topping) => elm.id !== topping.id),
+        );
+        return;
+      }
+      setSelectedToppings((prev: Topping[]) => [...prev, topping]);
+    });
   };
 
   return (
