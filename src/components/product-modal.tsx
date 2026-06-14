@@ -6,13 +6,32 @@ import { Label } from "./ui/label";
 import ToppingList from "./topping-list";
 import { Button } from "./ui/button";
 import { ShoppingCart } from "lucide-react";
-import { Product } from "@/lib/types";
+import { Product, Topping } from "@/lib/types";
 import { startTransition, Suspense, useState } from "react";
+import React from "react";
 const ProductModal = ({ product }: { product: Product }) => {
   type ChosenConfig = {
     [key: string]: string;
   };
   const [chosenConfig, setChosenConfig] = useState<ChosenConfig>();
+  const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
+
+  const handleCheckBoxCheck = (topping: Topping) => {
+    const isAlreadyExists = selectedToppings.some(
+      (element: Topping) => element.id === topping.id,
+    );
+
+    startTransition(() => {
+      if (isAlreadyExists) {
+        setSelectedToppings((prev) =>
+          prev.filter((elm: Topping) => elm.id !== topping.id),
+        );
+        return;
+      }
+      setSelectedToppings((prev: Topping[]) => [...prev, topping]);
+    });
+  };
+
   const handleAddToCart = () => {
     console.log("adding to cart...");
   };
@@ -88,7 +107,10 @@ const ProductModal = ({ product }: { product: Product }) => {
               },
             )}
             <Suspense fallback={"Topping loading..."}>
-              <ToppingList />
+              <ToppingList
+                selectedToppings={selectedToppings}
+                handleCheckBoxCheck={handleCheckBoxCheck}
+              />
             </Suspense>
             <div className="flex items-center justify-between mt-12">
               <span className="font-bold">₹400</span>
