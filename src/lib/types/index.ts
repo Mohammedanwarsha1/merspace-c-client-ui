@@ -20,7 +20,7 @@ export interface Attribute {
 export interface Category {
   _id: string;
   name: string;
-  priceConfiguration: PriceConfiguration;
+  PriceConfiguration: PriceConfiguration;
   attributes: Attribute[];
 }
 export type ProductAttribute = {

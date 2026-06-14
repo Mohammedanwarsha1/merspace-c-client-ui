@@ -32,7 +32,7 @@ const ProductModal = ({ product }: { product: Product }) => {
             <h3 className="text-xl font-bold">{product.name}</h3>
             <p className="mt-1">{product.description}</p>
 
-            {Object.entries(product.category.priceConfiguration).map(
+            {Object.entries(product.category.PriceConfiguration).map(
               ([key, value]) => {
                 return (
                   <div key={key}>

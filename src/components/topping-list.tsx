@@ -8,7 +8,7 @@ const ToppingList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const toppingResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=10`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=1`,
       );
       const toppings = await toppingResponse.json();
       setToppings(toppings);
