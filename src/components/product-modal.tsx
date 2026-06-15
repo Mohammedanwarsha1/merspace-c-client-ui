@@ -17,7 +17,18 @@ const ProductModal = ({ product }: { product: Product }) => {
   type ChosenConfig = {
     [key: string]: string;
   };
-  const [chosenConfig, setChosenConfig] = useState<ChosenConfig>();
+
+  const defaultConfiguration = Object.entries(
+    product.category.PriceConfiguration,
+  )
+    .map(([key, value]) => {
+      return { [key]: value.availableOptions[0] };
+    })
+    .reduce((acc, curr) => ({ ...acc, ...curr }));
+
+  const [chosenConfig, setChosenConfig] = useState<ChosenConfig>(
+    defaultConfiguration as unknown as ChosenConfig,
+  );
   const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
 
   const handleCheckBoxCheck = (topping: Topping) => {

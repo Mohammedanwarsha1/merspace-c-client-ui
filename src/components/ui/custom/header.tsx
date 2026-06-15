@@ -9,7 +9,7 @@ import {
 import { Phone } from "lucide-react";
 import { Button } from "../button";
 import { Tenant } from "@/lib/types";
-import CartCounter from "./cart-counter";
+// import CartCounter from "./cart-counter";
 const Header = async () => {
   const tenantresponse = await fetch(
     `${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`,
@@ -70,7 +70,7 @@ const Header = async () => {
               </Link>
             </li>
           </ul>
-          <CartCounter />
+          {/* <CartCounter /> */}
           <div className="flex items-center ml-12">
             <Phone />
             <span>+91 9800 098 998</span>
