@@ -31,6 +31,21 @@ const ProductModal = ({ product }: { product: Product }) => {
   );
   const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
 
+  const totalPrice = React.useMemo(() => {
+    const toppingsTotal = selectedToppings.reduce(
+      (acc, curr) => acc + curr.price,
+      0,
+    );
+    console.log("product", product);
+    const configPrice = Object.entries(chosenConfig).reduce(
+      (acc, [key, value]: [string, string]) => {
+        const price = product.priceConfiguration[key].availableOptions[value];
+        return acc + price;
+      },
+      0,
+    );
+    return configPrice + toppingsTotal;
+  }, [chosenConfig, selectedToppings, product]);
   const handleCheckBoxCheck = (topping: Topping) => {
     const isAlreadyExists = selectedToppings.some(
       (element: Topping) => element.id === topping.id,
@@ -135,7 +150,7 @@ const ProductModal = ({ product }: { product: Product }) => {
               />
             </Suspense>
             <div className="flex items-center justify-between mt-12">
-              <span className="font-bold">₹400</span>
+              <span className="font-bold">₹{totalPrice}</span>
               <Button onClick={() => handleAddToCart(product)} className="ml-2">
                 <ShoppingCart size={20} />
                 <span className="ml-2">Add to Cart</span>
