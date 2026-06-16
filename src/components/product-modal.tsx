@@ -36,7 +36,7 @@ const ProductModal = ({ product }: { product: Product }) => {
       (acc, curr) => acc + curr.price,
       0,
     );
-    console.log("product", product);
+
     const configPrice = Object.entries(chosenConfig).reduce(
       (acc, [key, value]: [string, string]) => {
         const price = product.priceConfiguration[key].availableOptions[value];
