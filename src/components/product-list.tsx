@@ -2,7 +2,16 @@ import { Category, Product } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import ProductCard from "./ProductCard";
 
-const ProductList = async () => {
+const ProductList = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ restaurantId?: string | string[] }>;
+}) => {
+  const resolvedSearchParams = await searchParams;
+  const restaurantId = Array.isArray(resolvedSearchParams.restaurantId)
+    ? resolvedSearchParams.restaurantId[0]
+    : resolvedSearchParams.restaurantId;
+
   const categoryResponse = await fetch(
     `${process.env.BACKEND_URL}/api/catalog/categories`,
     {
@@ -18,18 +27,15 @@ const ProductList = async () => {
   const categories: Category[] = await categoryResponse.json();
 
   const productResponse = await fetch(
-    `${process.env.BACKEND_URL}/api/catalog/product?perPage=100&tenantId=1`,
+    `${process.env.BACKEND_URL}/api/catalog/product?perPage=100&tenantId=${encodeURIComponent(restaurantId ?? "")}`,
     {
       next: {
         revalidate: 3600,
       },
     },
   );
-  console.log(productResponse.status);
-
   const products: { data: Product[] } = await productResponse.json();
 
-  console.log(products);
   return (
     <section>
       <div className="container mx-auto max-w-7xl px-20 py-12">

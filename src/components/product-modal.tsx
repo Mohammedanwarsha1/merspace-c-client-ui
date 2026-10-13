@@ -1,5 +1,11 @@
 "use client";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
@@ -135,16 +141,22 @@ const ProductModal = ({ product }: { product: Product }) => {
         <DialogTitle className="sr-only">Customize {product.name}</DialogTitle>
         <div className="flex">
           <div className="w-1/3 bg-white rounded p-3 flex items-center justify-center">
-            <Image
-              src={product.image}
-              width={450}
-              height={450}
-              alt={product.name}
-            />
+            <span className="relative block aspect-square w-full">
+              <Image
+                src={product.image}
+                fill
+                alt={product.name}
+                sizes="33vw"
+                className="object-contain"
+              />
+            </span>
           </div>
           <div className="w-2/3 p-8">
             <h3 className="text-xl font-bold">{product.name}</h3>
-            <p className="mt-1">{product.description}</p>
+            <DialogDescription className="mt-1">
+              Customize this product and choose any extra toppings.
+            </DialogDescription>
+            <p>{product.description}</p>
 
             {Object.entries(product.category.PriceConfiguration).map(
               ([key, value]) => {

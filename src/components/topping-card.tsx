@@ -15,6 +15,7 @@ const ToppingCard = ({
   selectedToppings,
   handleCheckBoxCheck,
 }: PropType) => {
+  const imageSrc = typeof topping.image === "string" ? topping.image.trim() : "";
   const isCurrentSelected = selectedToppings.some(
     (element) => element.id === topping.id,
   );
@@ -24,11 +25,27 @@ const ToppingCard = ({
       onClick={() => handleCheckBoxCheck(topping)}
       variant={"outline"}
       className={cn(
-        "flex flex-col h-42 relative",
+        "flex flex-col h-auto min-h-42 relative",
         isCurrentSelected ? "border-primary" : "",
       )}
     >
-      <Image src={topping.image} width={80} height={80} alt={topping.name} />
+      {imageSrc ? (
+        <span className="relative block h-20 w-20">
+          <Image
+            src={imageSrc}
+            fill
+            alt={topping.name}
+            unoptimized
+            sizes="80px"
+            className="object-contain"
+          />
+        </span>
+      ) : (
+        <div
+          className="w-20 h-20 rounded-md bg-gray-100"
+          aria-hidden="true"
+        />
+      )}
       <h4>{topping.name}</h4>
       <p>&#8377;{topping.price}</p>
       {isCurrentSelected && (
