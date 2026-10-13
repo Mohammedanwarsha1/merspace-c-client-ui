@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { Provider } from "react-redux";
 import { makeStore, AppStore } from "../lib/store/store";
-import { setInitialCartItems } from "@/lib/store/features/cart/cartSlice";
+import {
+  isValidCartItem,
+  setInitialCartItems,
+} from "@/lib/store/features/cart/cartSlice";
 
 export default function StoreProvider({
   children,
@@ -24,8 +27,16 @@ export default function StoreProvider({
 
       if (cartItems) {
         const parsedItems = JSON.parse(cartItems);
+        const validItems = Array.isArray(parsedItems)
+          ? parsedItems.filter(isValidCartItem)
+          : [];
 
-        storeRef.current?.dispatch(setInitialCartItems(parsedItems));
+        if (validItems.length !== (Array.isArray(parsedItems) ? parsedItems.length : 0)) {
+          localStorage.setItem("cartItems", JSON.stringify(validItems));
+          console.warn("Removed invalid cart items from localStorage");
+        }
+
+        storeRef.current?.dispatch(setInitialCartItems(validItems));
       }
     } catch (err) {
       console.error("Failed to load cart items:", err);

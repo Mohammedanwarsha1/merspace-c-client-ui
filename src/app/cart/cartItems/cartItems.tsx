@@ -7,6 +7,7 @@ import { useAppSelector } from "@/lib/store/hooks";
 import { ArrowRight, ShoppingCart } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { getItemTotal } from "@/lib/utils";
 
 // Detect whether the component has hydrated in the browser.
 const subscribe = () => () => {};
@@ -24,6 +25,12 @@ const CartItems = () => {
   );
 
   const cart = useAppSelector((state) => state.cart.cartItems);
+
+  const finalTotal = React.useMemo(() => {
+    return cart.reduce((acc, curr) => {
+      return acc + curr.qty * getItemTotal(curr);
+    }, 0);
+  }, [cart]);
 
   if (!isClient) {
     return null;
@@ -56,7 +63,7 @@ const CartItems = () => {
       ))}
 
       <div className="flex justify-between items-center">
-        <span className="font-bold text-xl">₹4000</span>
+        <span className="font-bold text-xl">{finalTotal}</span>
 
         <Button
           onClick={() =>

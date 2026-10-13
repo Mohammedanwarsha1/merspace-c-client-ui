@@ -60,7 +60,18 @@ const ProductModal = ({ product }: { product: Product }) => {
 
     const configPrice = Object.entries(chosenConfig).reduce(
       (acc, [key, value]: [string, string]) => {
-        const price = product.priceConfiguration[key].availableOptions[value];
+        const configuration = product.priceConfiguration?.[key];
+        const price = configuration?.availableOptions?.[value];
+
+        if (typeof price !== "number") {
+          console.error("Invalid product price configuration", {
+            productId: product._id,
+            key,
+            value,
+          });
+          return acc;
+        }
+
         return acc + price;
       },
       0,

@@ -17,6 +17,47 @@ export interface CartItem extends Pick<
 export interface CartState {
   cartItems: CartItem[];
 }
+
+export function isValidCartItem(value: unknown): value is CartItem {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const item = value as Partial<CartItem>;
+  const chosenConfiguration = item.chosenConfiguration;
+
+  if (
+    typeof item._id !== "string" ||
+    typeof item.name !== "string" ||
+    !item.priceConfiguration ||
+    !chosenConfiguration ||
+    !Array.isArray(chosenConfiguration.selectedToppings) ||
+    typeof item.qty !== "number"
+  ) {
+    return false;
+  }
+
+  if (
+    typeof chosenConfiguration.priceConfiguration !== "object" ||
+    chosenConfiguration.priceConfiguration === null
+  ) {
+    return false;
+  }
+
+  return Object.entries(chosenConfiguration.priceConfiguration).every(
+    ([key, value]) => {
+      const configuration = item.priceConfiguration?.[key];
+      return (
+        typeof value === "string" &&
+        configuration !== undefined &&
+        typeof configuration.availableOptions === "object" &&
+        configuration.availableOptions !== null &&
+        typeof configuration.availableOptions[value] === "number"
+      );
+    },
+  );
+}
+
 const initialState: CartState = {
   cartItems: [],
 };
